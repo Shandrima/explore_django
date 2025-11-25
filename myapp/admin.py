@@ -11,13 +11,13 @@ class MarkInline(admin.TabularInline):
     model = Mark
     extra = 1  
 
-@admin.action(description="Make selected students Active")
-def make_students_active(modeladmin, request, queryset):
-    queryset.update(is_active=True)
+# @admin.action(description="Make selected students Active")
+# def make_students_active(modeladmin, request, queryset):
+#     queryset.update(is_active=True)
 
-@admin.action(description="Make selected students Inactive")
-def make_students_inactive(modeladmin, request, queryset):
-    queryset.update(is_active=False)
+# @admin.action(description="Make selected students Inactive")
+# def make_students_inactive(modeladmin, request, queryset):
+#     queryset.update(is_active=False)
 
 
 @admin.register(Student)
@@ -28,7 +28,6 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = ("name", "course")
     list_editable = ("course", "is_active")
     ordering = ("name",)
-    actions = [make_students_active, make_students_inactive]
 
 
     inlines = [MarkInline]
@@ -38,6 +37,20 @@ class StudentAdmin(admin.ModelAdmin):
         ("Academic Info", {"fields": ("course","is_active")}),  
     )
 
+    actions = ("make_students_active", "make_students_inactive")
+
+    
+    # Actions Inside Class
+    
+    @admin.action(description="Make selected students Active")
+    def make_students_active(self, request, queryset):
+        queryset.update(is_active=True)
+
+    @admin.action(description="Make selected students Inactive")
+    def make_students_inactive(self, request, queryset):
+        queryset.update(is_active=False)
+
+
     def get_readonly_fields(self, request, obj=None):
     
         if obj and not obj.is_active:
@@ -45,4 +58,6 @@ class StudentAdmin(admin.ModelAdmin):
     
         return ()
     
+
+
 
